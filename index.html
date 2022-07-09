@@ -8,7 +8,16 @@
   </head>
   <body>
     <div>
-      <ul class="info-list" class="hidden"></ul>
+      <div>
+        <input type="checkbox" id="allCheckbox" />
+        <label for="allCheckbox">전체선택</label>
+      </div>
+      <ul class="info-list hidden"></ul>
+      <button type="button" id="submitButton">제출하기</button>
+      <p>
+        result :<br />
+        <span id="result"></span>
+      </p>
     </div>
     <script src="js/app.js"></script>
   </body>

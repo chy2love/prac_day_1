@@ -1,4 +1,4 @@
-let arr = [
+const arr = [
   {
     name: '이름',
     value: 'memberName',
@@ -22,75 +22,65 @@ let arr = [
 ];
 
 const infoList = document.querySelector('.info-list');
-const checkboxAll = document.createElement('input');
-checkboxAll.type = 'checkbox';
-checkboxAll.className = 'main-checkbox';
-document.body.appendChild(checkboxAll);
-const submitBtn = document.createElement('button');
-infoList.appendChild(submitBtn);
-submitBtn.innerText = '제출하기';
-submitBtn.className = 'submit-button';
-let checkCount = 0;
+const checkboxAll = document.getElementById('allCheckbox');
+const submitBtn = document.getElementById('submitButton');
+let everyCheckbox;
 
-function paintList(arr) {
+function paintDocument(arr) {
   for (let item of arr) {
     const infoListEl = document.createElement('li');
-    const infoSpan = document.createElement('span');
+    const infoLabel = document.createElement('label');
     const infoCheckbox = document.createElement('input');
-    infoListEl.id = item.value;
-    infoSpan.innerText = item.name;
-    infoCheckbox.value = item.name;
+    infoLabel.innerText = item.name;
+    infoLabel.setAttribute('for', item.name);
+    infoCheckbox.value = item.value;
     infoCheckbox.type = 'checkbox';
     infoCheckbox.className = 'indiv-checkbox';
-    infoCheckbox.name = 'content';
+    infoCheckbox.id = item.name;
+
     infoList.appendChild(infoListEl);
     infoListEl.appendChild(infoCheckbox);
-    infoListEl.appendChild(infoSpan);
+    infoListEl.appendChild(infoLabel);
   }
-  const indivCheckbox = document.querySelectorAll('.indiv-checkbox');
 
-  for (let item of indivCheckbox) {
+  everyCheckbox = document.querySelectorAll('.indiv-checkbox');
+
+  for (let item of everyCheckbox) {
     item.addEventListener('change', singleCheckbox);
   }
 }
 
-function singleCheckbox(event) {
-  if (event.target.checked == false) {
-    checkboxAll.checked = false;
-    checkCount -= 1;
-  } else {
-    checkCount += 1;
-    if (checkCount == 5) {
-      checkboxAll.checked = true;
-    }
-  }
+function singleCheckbox() {
+  let count = 0;
+  everyCheckbox.forEach((item) => {
+    count = item.checked ? count + 1 : count;
+  });
+  checkboxAll.checked = count === arr.length;
 }
-function handleMainCheckList(event) {
-  const everyCheckbox = document.querySelectorAll('.indiv-checkbox');
-  if (event.target.checked == true) {
-    for (let item of everyCheckbox) {
-      item.checked = true;
-      checkCount = 5;
-    }
-  } else if (event.target.checked == false) {
-    for (let item of everyCheckbox) {
-      item.checked = false;
-      checkCount = 0;
-    }
-  }
+
+function onClickAllCheck(event) {
+  everyCheckbox.forEach((item) => {
+    item.checked = event.target.checked;
+  });
 }
-function handleSubmit(event) {
-  const everyCheckbox = document.querySelectorAll('.indiv-checkbox');
+
+function handleSubmit() {
   let value = [];
+  let resultText = '';
+
   for (let item of everyCheckbox) {
-    if (item.checked == true) {
-      value.push(item.value);
+    if (item.checked) {
+      value.push({ name: item.id, value: item.value });
+      resultText += `한국어로는 ${item.id} 영어로는 ${item.value} \n`;
     }
   }
+
+  const result = document.getElementById('result');
+  result.innerText = resultText;
   console.log(value);
 }
 submitBtn.addEventListener('click', handleSubmit);
-checkboxAll.addEventListener('change', handleMainCheckList);
+checkboxAll.addEventListener('change', onClickAllCheck);
 document.addEventListener('DOMContentLoaded', function () {
-  paintList(arr);
+  paintDocument(arr);
 });
